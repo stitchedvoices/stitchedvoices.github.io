@@ -18,6 +18,7 @@
             min-height: 100vh;
         }
         .container {
+            width: 100%;
             max-width: 650px;
             background-color: #1e1e24; 
             padding: 40px;
@@ -25,6 +26,8 @@
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
             border: 1px solid #2a2a35;
             text-align: center;
+            box-sizing: border-box;
+            margin: 20px;
         }
         h1 {
             color: #ff79c6; 
@@ -41,21 +44,73 @@
             margin-bottom: 30px;
             text-align: justify;
         }
-        .btn {
+
+        /* --- Custom Form Styling to Match Your Theme --- */
+        form {
+            text-align: left;
+            margin-top: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ff79c6;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        input[type="text"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            background-color: #121214;
+            border: 1px solid #2a2a35;
+            border-radius: 6px;
+            color: #e4e4e7;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #bd93f9;
+        }
+        select {
+            cursor: pointer;
+        }
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+        .btn-submit {
+            width: 100%;
+            border: none;
             display: inline-block;
             background: linear-gradient(135deg, #ff79c6, #bd93f9); 
             color: #121214;
-            text-decoration: none;
             padding: 14px 35px;
             font-weight: bold;
             border-radius: 30px;
             letter-spacing: 1px;
+            cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
             box-shadow: 0 4px 15px rgba(255, 121, 198, 0.3);
+            font-size: 1.1rem;
         }
-        .btn:hover {
+        .btn-submit:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(255, 121, 198, 0.5);
+        }
+        #form-message {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
         }
     </style>
 </head>
@@ -67,7 +122,60 @@
             creative writers looking for an audience, and vocal reciters searching for relatable stories to perform. 
             Writers publish their prose and poetry, reciters select the pieces that speak to them to perform in their own voice, and listeners experience literature with a human pulse.
         </p>
-        <a href="https://forms.google.com" target="_blank" class="btn">Join Our Creative Community</a>
+
+        <form id="submit-to-google">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Your Name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="yourname@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="role">Your Creative Role</label>
+                <select id="role" name="role" required>
+                    <option value="" disabled selected>Select your role...</option>
+                    <option value="Writer">Writer (Storyteller)</option>
+                    <option value="Reciter">Reciter (Vocal Performer)</option>
+                    <option value="Listener">Listener (Art Enthusiast)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" placeholder="Tell us about your creative journey..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">Join Our Creative Community</button>
+            <div id="form-message"></div>
+        </form>
     </div>
+
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwjkRmPbasAWWf-h_uEvp5jpMBOzzdBHWHFh_q4deGuG7tadUAk77vktc8QWx8AHhKe/exec';
+        const form = document.getElementById('submit-to-google');
+        const formMessage = document.getElementById('form-message');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            formMessage.style.color = '#b4b4c0';
+            formMessage.textContent = 'Sending registration request...';
+
+            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+                .then(response => {
+                    formMessage.style.color = '#bd93f9';
+                    formMessage.textContent = 'Success! Welcome to INK ALOUD.';
+                    form.reset();
+                })
+                .catch(error => {
+                    formMessage.style.color = '#ff79c6';
+                    formMessage.textContent = 'Error! Something went wrong. Please try again.';
+                    console.error('Error!', error.message);
+                });
+        });
+    </script>
 </body>
 </html>
